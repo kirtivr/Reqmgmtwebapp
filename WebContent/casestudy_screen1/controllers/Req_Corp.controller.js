@@ -73,7 +73,7 @@ openOverlay:function(number)
 	},
 
 closeOverlay:function()
-{	var container=sap.ui.getCore().byId("container");
+{	var container=sap.ui.getCore().byId("myOverlayContainer");
 	container.close();
 }
 	,
@@ -110,30 +110,41 @@ getRandomInt: function(min, max) {
 
 // Create data from the values obtained from second overlay container.
 
-createData:function()
+createData:function(reqData)
 {
-	var requestDate="Created on "+sap.ui.getCore().byId("date1").getValue();
+	
     var requestType=sap.ui.getCore().byId("pdesc").getValue();
     var requestNumber=this.getRandomInt(8000000, 9000000);
     var requestFrom=sap.ui.getCore().byId("rname").getValue();
     var requestStatus="Request " + "Submitted";
-    var oProduct = {date:requestDate,type:requestType,number:requestNumber,from:requestFrom,status:requestStatus};
-    return oProduct;
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth()+1; //January is 0!
+
+    var yyyy = today.getFullYear();
+    if(dd<10){dd='0'+dd;}; 
+    if(mm<10){mm='0'+mm;};
+    today = mm+'/'+dd+'/'+yyyy;
+    var requestDate=today;
+    var createdOnValue = "Created on " + requestDate;
+    var oProduct = {date:createdOnValue,type:requestType,number:requestNumber,from:requestFrom,status:requestStatus};
+    reqData.products.push(oProduct);
 	},
 	
 // publish data to  screen 1 controller
 	
-	setData:function(odata)
+setData:function(odata)
 	{	
 		
 
 
 		var ctrl=sap.ui.getCore().byId("idscreen11").getController();
 	    oEvBus= new sap.ui.core.EventBus();
-	    oEvBus.subscribe("arole","transfer2",ctrl.getData,ctrl);
+	    oEvBus.subscribe("arole","transfer2",ctrl.addRequest,ctrl);
 	  
 	    
 	    oEvBus.publish("arole","transfer2",odata);
+	    
 	},
 
 	// dynamically create new dataset item and push to matrix layout row.

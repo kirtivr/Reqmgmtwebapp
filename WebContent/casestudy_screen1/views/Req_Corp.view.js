@@ -136,14 +136,15 @@ sap.ui.jsview("casestudy_screen1.views.Req_Corp",
         vLayout.addContent(oPanel1);
         vLayout.addContent(oPanel2);
         vLayout.addContent(oPanel3);
-
         
+        var reqData={products:[]};
         var submitbutton = new sap.ui.commons.Button("submit_1",{text:"Submit Request",style: sap.ui.commons.ButtonStyle.Emph,press : 
         	function() {
   				if(oController.validateform())
   					{
-  				datasetdata.products.push(oController.createData());
-  				oController.setData(datasetdata);
+  				(oController.createData(reqData));
+  				oController.setData(reqData);
+  				oController.closeOverlay();
   					}
   				else
   					{
